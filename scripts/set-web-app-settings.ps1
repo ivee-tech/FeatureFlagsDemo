@@ -1,8 +1,8 @@
-﻿$resourceGroup  = "" # "[Resource group name]"
-$webAppName     = "" # "[Web app name]"
-$subscriptionId = "" # "[Subscription Id]"
-$slot           = "" # "[DeploymentSlot or empty]"
-
+﻿param([string]$resourceGroup  = "" # "[Resource group name]"
+    , [string]$webAppName     = "" # "[Web app name]"
+    , [string]$subscriptionId = "" # "[Subscription Id]"
+    , [string]$slot           = "" # "[DeploymentSlot or empty]"
+)
  
 $hash = @{
     "Features:Names:Uri" = "http://uinames.com/api/";
@@ -41,7 +41,7 @@ try
     $webAppSettings = $webApp.SiteConfig.AppSettings
  
     Write-Host "The following application settings are already available in the Azure webapp '$webAppName':"
-    $webAppSettings | ft
+    $webAppSettings | Format-Table
  
     # copy existing app settings to hash
     foreach ($setting in $webAppSettings) {

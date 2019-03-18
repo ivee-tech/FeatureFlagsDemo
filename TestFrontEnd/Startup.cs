@@ -42,18 +42,14 @@ namespace TestFrontEnd
             services.AddHttpClient();
 
             IConfigReader appConfig = new NetCoreSettingsConfigReader(Configuration);
-            // IConfigReader credKVConfig1 = new CredentialsKeyVaultConfigReader(appConfig);
             IConfigReader envConfig = new EnvVarsConfigReader(EnvironmentVariableTarget.Process);
-            // IConfigReader credKVConfig2 = new CredentialsKeyVaultConfigReader(envConfig);
 
             services
                 // .AddSingleton<IConfigReader>(provider => appConfig)
                 .AddSingleton<IConfigReader>(provider => envConfig)
-                // .AddSingleton<IConfigReader>(provider => credKVConfig1)
-                // .AddSingleton<IConfigReader>(provider => credKVConfig2)
                 .AddScoped<INamesClient, Names>()
-                .AddScoped<IFeatureFlags, FeatureFlags>()
-                .AddScoped<IGiphyClient, Giphy>()
+                //.AddScoped<IFeatureFlags, FeatureFlags>()
+                //.AddScoped<IGiphyClient, Giphy>()
                 ;
         }
 
