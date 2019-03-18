@@ -1,0 +1,30 @@
+﻿@model TestFrontEnd.Models.NameModel
+@{
+    ViewData["Title"] = "Name";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Name page</h1>
+</div>
+
+<div>
+    <table width="50%">
+        <tr>
+            <th>First name</th>
+            <td>@Model.Name</td>
+        </tr>
+        <tr>
+            <th>Last name</th>
+            <td>@Model.Surname</td>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <td>@Model.Gender</td>
+        </tr>
+        <tr>
+            <th>Region</th>
+            <td>@Model.Region</td>
+        </tr>
+    </table>
+</div>
+

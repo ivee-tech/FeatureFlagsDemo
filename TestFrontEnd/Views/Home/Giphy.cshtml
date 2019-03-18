@@ -1,0 +1,17 @@
+﻿@{
+    ViewData["Title"] = "Giphy";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Giphy</h1>
+</div>
+
+<div>
+    @foreach(var url in ViewBag.Urls)
+    {
+        <div>
+        <img src="@url" />
+        </div>
+        <hr/>
+    }
+</div>
