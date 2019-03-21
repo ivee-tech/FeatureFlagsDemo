@@ -1,9 +1,9 @@
-﻿@*@inject Microsoft.CommonLib.IFeatureFlags features*@
+﻿@inject Microsoft.CommonLib.IFeatureFlags features
 @{
-    // ViewBag.GiphyEnabled = features.IsFeatureEnabled("Features:Giphy:Enabled");
+    ViewBag.GiphyEnabled = features.IsFeatureEnabled("Features:Giphy:Enabled");
     // ViewBag.GiphyEnabled = features.IsFeatureEnabledExpr("Features:Giphy:EnabledExpr");
-    // ViewBag.Info = features.Eval<string>("System.DateTime.Now.ToString()");
-    // var giphyEnabled = ViewBag.GiphyEnabled != null && ViewBag.GiphyEnabled;
+    ViewBag.Info = features.Eval<string>("System.DateTime.Now.ToString()");
+    var giphyEnabled = ViewBag.GiphyEnabled != null && ViewBag.GiphyEnabled;
 }
 <!DOCTYPE html>
 <html>
@@ -41,14 +41,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Name">Name</a>
                         </li>
-                        @*
                         @if(giphyEnabled)
                         {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Giphy">Giphy</a>
                         </li>
                         }
-                        *@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

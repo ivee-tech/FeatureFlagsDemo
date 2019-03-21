@@ -1,4 +1,8 @@
-﻿param([string]$resourceGroup  = "" # "[Resource group name]"
+﻿<#
+Example:
+.\set-web-app-settings.ps1 -resourceGroup ff99 -webAppName ff-web-99 -subscriptionId 7f2ee00e-a72b-401c-9388-f2cdfd63c80c -slot ''
+#>
+param([string]$resourceGroup  = "" # "[Resource group name]"
     , [string]$webAppName     = "" # "[Web app name]"
     , [string]$subscriptionId = "" # "[Subscription Id]"
     , [string]$slot           = "" # "[DeploymentSlot or empty]"
@@ -6,9 +10,9 @@
  
 $hash = @{
     "Features:Names:Uri" = "http://uinames.com/api/";
-    # "Features:Giphy:Enabled" = "false";
-    # "Features:Giphy:EnabledExpr" = "System.DateTime.Now.Hour <= 12";
-    # "Features:Giphy:UriFormat" = "http://api.giphy.com/v1/gifs/search?q={0}&api_key=dc6zaTOxFJmzC&limit=10&offset=0";
+    "Features:Giphy:Enabled" = "false";
+    "Features:Giphy:EnabledExpr" = "System.DateTime.Now.Hour <= 12";
+    "Features:Giphy:UriFormat" = "http://api.giphy.com/v1/gifs/search?q={0}&api_key=dc6zaTOxFJmzC&limit=10&offset=0";
 }
 
 function SetSubscription([string] $subscriptionId) {

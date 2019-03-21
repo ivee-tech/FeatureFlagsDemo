@@ -48,8 +48,8 @@ namespace TestFrontEnd
                 // .AddSingleton<IConfigReader>(provider => appConfig)
                 .AddSingleton<IConfigReader>(provider => envConfig)
                 .AddScoped<INamesClient, Names>()
-                //.AddScoped<IFeatureFlags, FeatureFlags>()
-                //.AddScoped<IGiphyClient, Giphy>()
+                .AddScoped<IFeatureFlags, FeatureFlags>()
+                .AddScoped<IGiphyClient, Giphy>()
                 ;
         }
 
