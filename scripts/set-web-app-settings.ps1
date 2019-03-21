@@ -1,8 +1,4 @@
-﻿<#
-Example:
-.\set-web-app-settings.ps1 -resourceGroup ff99 -webAppName ff-web-99 -subscriptionId 7f2ee00e-a72b-401c-9388-f2cdfd63c80c -slot ''
-#>
-param([string]$resourceGroup  = "" # "[Resource group name]"
+﻿param([string]$resourceGroup  = "" # "[Resource group name]"
     , [string]$webAppName     = "" # "[Web app name]"
     , [string]$subscriptionId = "" # "[Subscription Id]"
     , [string]$slot           = "" # "[DeploymentSlot or empty]"
