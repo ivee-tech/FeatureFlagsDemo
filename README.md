@@ -24,11 +24,11 @@ To make it easier to run application builds and to deploy it to Azure, we will u
 
 ### Build Pipeline (CI enabled)
 
-![Build Pipeline](./docs/build-pipeline.jpg)
+![Build Pipeline](../tree/master/docs/build-pipeline.jpg)
 
 ### Release Pipeline (no CD)
 
-![Release Pipeline](./docs/release-pipeline.jpg)
+![Release Pipeline](../tree/master/docs/release-pipeline.jpg)
 
 The release pipeline contains two stages, Green (the stable production environment) and Blue (the production environment containing the new Giphy feature).
 
@@ -97,9 +97,139 @@ To deploy to Blue environment, perform the following steps:
 
 If all good, if you navigate to https://ff-web-99-b.azurewebsites.net/Home/Name, you should see the same as feature as in the Green environment, but no Giphy menu entry:
 
+![Blue, no Giphy feature](./docs/blue-no-giphy.jpg)
 
+## Feature Flag - static value
+
+If we change the <code>Features:Giphy:Enabled</code> setting from <code>false</code> to <code>true</code> as in the below image
+
+![Features:Giphy:Enabled = true](./docs/settings-giphy-enabled.jpg)
+
+and refresh the Blue Home page, we should see the Giphy menu entry (you may need to clear the browser cache):
+
+![Blue Giphy menu](./docs/blue-giphy-menu.jpg)
+
+Clicking on Gihpy menu option should navigate to the Giphy page:
+
+![Giphy page](./docs/giphy-page.jpg)
+
+It should be noted that hiding the Giphy feature is not enough, as the user can navigate directly to the Gihpy Url. To prevent this from happening, we need to disable the feature at the controller level, by simply returning 404 (not found) in the <code>HomeController.Giphy</code> action:
+
+``` C#
+        public async Task<IActionResult> Giphy(string q)
+        {
+            var enabled = _features.IsFeatureEnabled("Features:Giphy:Enabled");
+            // var enabled = _features.IsFeatureEnabledExpr("Features:Giphy:EnabledExpr");
+            if(enabled)
+            {
+                string search = "flags";
+                if(!string.IsNullOrEmpty(q))
+                    search = q;
+                var urls = await _giphy.GetGifsAsync(search);
+                ViewBag.Urls = urls;
+                return View();
+            }
+            return NotFound();
+        }
+```
+
+## Feature Flag - dynamic value
+
+Often the feature we want to enable / disable might depend on user role membership, geographic location, time of the year (Christmas sales for example), etc. If we want to take these dependencies into account, we need to evaluate expressions that will turn on and off the corresponding features.
+One way to do this is to evaluate .NET expressions at runtime, using Roslyn (<code>Microsoft.CodeAnalysis.CSharp.Scripting</code> package).
+The <code>FeatureFlags</code> class contains the <code>IsFeatureEnabledExpr</code> which evaluates the expression:
+
+``` C#
+        public bool IsFeatureEnabledExpr(string key)
+        {
+            bool result = false;
+            try
+            {
+                var expression = _config[key];
+                result = CSharpScript.EvaluateAsync<bool>(expression).Result;
+            }
+            catch(Exception ex)
+            {
+                // log ex
+                result = false;
+            }
+            return result;
+        }
+```
+
+For our demo, we check the current server time and return true if it's before noon and false otherwise:
+
+```
+    "Features:Giphy:EnabledExpr" = "System.DateTime.Now.Hour <= 12";
+```
+
+You will need to uncomment the use of the <code>Features:Giphy:EnabledExpr</code> setting in the <code>HomeController.Giphy</code> action:
+
+``` C#
+        public async Task<IActionResult> Giphy(string q)
+        {
+            // var enabled = _features.IsFeatureEnabled("Features:Giphy:Enabled");
+            var enabled = _features.IsFeatureEnabledExpr("Features:Giphy:EnabledExpr");
+            if(enabled)
+            {
+                string search = "flags";
+                if(!string.IsNullOrEmpty(q))
+                    search = q;
+                var urls = await _giphy.GetGifsAsync(search);
+                ViewBag.Urls = urls;
+                return View();
+            }
+            return NotFound();
+        }
+```
+
+You also need to uncomment the use of the expression in the *_Layout.cshtml* view:
+
+``` C#
+@inject Microsoft.CommonLib.IFeatureFlags features
+@{
+    // ViewBag.GiphyEnabled = features.IsFeatureEnabled("Features:Giphy:Enabled");
+    ViewBag.GiphyEnabled = features.IsFeatureEnabledExpr("Features:Giphy:EnabledExpr");
+    ViewBag.Info = features.Eval<string>("System.DateTime.Now.ToString()");
+    var giphyEnabled = ViewBag.GiphyEnabled != null && ViewBag.GiphyEnabled;
+}
+```
+
+Commit and push the code changes and follow the Blue deployment steps, as above. To make sure you are using the expression, turn off the <code>Features:Giphy:Enabled</code> setting. Refresh the page and, depending on the server time, the Giphy feature should be enabled / disabled.
 
 ## Configuring Azure Front Door
+
+The Blue / Green deployments rely on the load balancer to redirect the traffic to one environment or the other.
+Load balancers provide traffic redirection options based on geographic location, performance, weight, etc.
+To simulate a real Blue / Green deployment scenario, we will use the Azure Front Door Service, which is an Azure feature in preview at the time of this writing.
+The front door created for this demo contains the following:
+ - A front-end, https://ff99.azurefd.net which will be the Url used in production
+ - A back-end pool named <code>blue-green</code>, containing two back-ends:
+    - the Green app service, https://ff-web-99.azurewebsites.net
+    - the Blue app service, https://ff-web-99-b.azurewebsites.net
+ - A simple routing rule
+
+![Front Door](./docs/front-door.jpg)
+
+For demonstration purposes, we will use the Weight method to perform redirection. The weight has a value between 1 and 1000.
+Initially we set the Green back-end weight to 1000 and the Blue weight to 1:
+
+![Green weight](./docs/green-weight.jpg)
+
+When navigating to the front door, https://ff99.azurefd.net, we are redirected to the Green environment.
+
+We then set the Blue weight to 1000 an the Green weight to 1:
+
+![Blue weight](./docs/blue-weight.jpg)
+
+When navigating to the front door, https://ff99.azurefd.net, we are redirected to the Blue environment.
+
+## Conclusion
+
+Feature Flags are a powerful tool in a developer's toolbelt. However, they require discipline and proper organisation to make sure they work as expected and don't impact the existing application stability.
+In conjunction with deployment strategies such as Blue / Green deployments, Feature Flags could potentially help you ship many features more often and deliver value to your customers.
+
+---
 
 ## Resources
 
@@ -115,3 +245,6 @@ https://docs.microsoft.com/en-us/azure/devops/articles/phase-features-with-featu
 https://opensource.com/article/18/2/feature-flags-ring-deployment-model
  - Rollout with rings:
 https://docs.microsoft.com/en-us/azure/devops/articles/phase-rollout-with-rings?view=azure-devops
+ - Azure Front Door service:
+https://azure.microsoft.com/en-us/services/frontdoor/
+

@@ -17,14 +17,14 @@ namespace TestFrontEnd.Controllers
 
         private readonly IConfigReader _config;
         private readonly INamesClient _names;
-        private readonly IFeatureFlags _features;
-        private readonly IGiphyClient _giphy;
-        public HomeController(IConfigReader config, INamesClient names, IFeatureFlags features, IGiphyClient giphy)
+        // private readonly IFeatureFlags _features;
+        // private readonly IGiphyClient _giphy;
+        public HomeController(IConfigReader config, INamesClient names) // , IFeatureFlags features, IGiphyClient giphy)
         {
             _config = config;
             _names = names;
-            _features = features;
-            _giphy = giphy;
+            // _features = features;
+            // _giphy = giphy;
         }
         public IActionResult Index()
         {
@@ -41,6 +41,7 @@ namespace TestFrontEnd.Controllers
             return View(nameModel);
         }
 
+        /*
         public async Task<IActionResult> Giphy(string q)
         {
             // var enabled = _features.IsFeatureEnabled("Features:Giphy:Enabled");
@@ -57,6 +58,7 @@ namespace TestFrontEnd.Controllers
             }
             return NotFound();
         }
+        */
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

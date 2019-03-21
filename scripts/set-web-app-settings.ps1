@@ -10,9 +10,9 @@ param([string]$resourceGroup  = "" # "[Resource group name]"
  
 $hash = @{
     "Features:Names:Uri" = "http://uinames.com/api/";
-    "Features:Giphy:Enabled" = "false";
-    "Features:Giphy:EnabledExpr" = "System.DateTime.Now.Hour <= 12";
-    "Features:Giphy:UriFormat" = "http://api.giphy.com/v1/gifs/search?q={0}&api_key=dc6zaTOxFJmzC&limit=10&offset=0";
+    # "Features:Giphy:Enabled" = "false";
+    # "Features:Giphy:EnabledExpr" = "System.DateTime.Now.Hour <= 12";
+    # "Features:Giphy:UriFormat" = "http://api.giphy.com/v1/gifs/search?q={0}&api_key=dc6zaTOxFJmzC&limit=10&offset=0";
 }
 
 function SetSubscription([string] $subscriptionId) {
