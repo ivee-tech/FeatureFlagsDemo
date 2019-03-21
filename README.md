@@ -226,8 +226,8 @@ When navigating to the front door, https://ff99.azurefd.net, we are redirected t
 
 ## Conclusion
 
-Feature Flags are a powerful tool in a developer's toolbelt. However, they require discipline and proper organisation to make sure they work as expected and don't impact the existing application stability.
-In conjunction with deployment strategies such as Blue / Green deployments, Feature Flags could potentially help you ship many features more often and deliver value to your customers.
+Feature Flags are a powerful tool in a developer's toolbelt. However, they require discipline and proper planning to make sure they work as expected and don't impact the existing application stability.
+In conjunction with deployment strategies such as Blue / Green deployments, Feature Flags could potentially help you ship many features more often and deliver value faster to your customers.
 
 ---
 
