@@ -24,11 +24,11 @@ To make it easier to run application builds and to deploy it to Azure, we will u
 
 ### Build Pipeline (CI enabled)
 
-![Build Pipeline](../tree/master/docs/build-pipeline.jpg)
+![Build Pipeline](docs/build-pipeline.jpg)
 
 ### Release Pipeline (no CD)
 
-![Release Pipeline](../tree/master/docs/release-pipeline.jpg)
+![Release Pipeline](docs/release-pipeline.jpg)
 
 The release pipeline contains two stages, Green (the stable production environment) and Blue (the production environment containing the new Giphy feature).
 
